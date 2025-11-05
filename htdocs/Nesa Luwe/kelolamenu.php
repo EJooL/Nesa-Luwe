@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Nesa Luwe</title>
+    <style>
+        /* CSS Kustom di sini */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f8f9fa; }
+        .admin-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background-color: #2c3e50; color: #ecf0f1; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .sidebar .logo { text-align: center; margin-bottom: 30px; font-size: 24px; font-weight: bold; color: #fff; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar ul li { margin-bottom: 15px; }
+        .sidebar ul li a { color: #ecf0f1; text-decoration: none; display: block; padding: 10px 15px; border-radius: 5px; transition: background-color 0.3s; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background-color: #34495e; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .header { background-color: #ffffff; padding: 20px; border-bottom: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .header h1 { margin: 0; font-size: 24px; color: #343a40; }
+        .user-info { display: flex; align-items: center; }
+        .user-info span { margin-right: 15px; color: #555; }
+        .user-info a { color: #dc3545; text-decoration: none; padding: 8px 15px; border-radius: 5px; background-color: #f8d7da; }
+        .user-info a:hover { background-color: #e2b7bd; }
+        .content-area { padding: 30px; flex-grow: 1; background-color: #fff; margin: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        .card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; color: #333; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .data-table th, .data-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .data-table th { background-color: #f2f2f2; font-weight: bold; }
+        .btn-action { background-color: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-right: 5px; }
+        .btn-action.edit { background-color: #ffc107; }
+        .btn-action.delete { background-color: #dc3545; }
+        .btn-action:hover { opacity: 0.9; }
+        .form-control { width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        /* Pastikan CSS ini ada di bagian <style> Anda, bersama dengan yang sebelumnya */
+
+/* Styling untuk Filter Dropdown */
+.form-control[style*="inline-block"] {
+    padding: 8px 10px;
+    height: auto;
+}
+
+/* Penyesuaian Status untuk Keterbacaan */
+/* status-active dan status-inactive sudah dibuat di response sebelumnya. */
+/* Jika Anda ingin status "Habis" terlihat beda dari "Tidak Aktif" di Warung, Anda bisa definisikan kelas baru, misalnya: */
+.status-out-of-stock {
+    background-color: #ffe5cc; /* Oranye muda */
+    color: #cc6600; /* Oranye tua */
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+        /* Tambahan CSS Khusus Halaman Kelola Warung */
+
+/* Styling untuk status di tabel */
+.status-active {
+    background-color: #d4edda; /* Hijau muda */
+    color: #155724; /* Hijau tua */
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.status-inactive {
+    background-color: #f8d7da; /* Merah muda */
+    color: #721c24; /* Merah tua */
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* Tombol Tambah/Aksi Utama */
+.btn-action.primary {
+    background-color: #28a745; /* Warna hijau untuk Tambah/Simpan */
+}
+.btn-action.primary:hover {
+    background-color: #1e7e34;
+}
+.btn-action.secondary {
+    background-color: #6c757d; /* Warna abu-abu untuk Batal */
+}
+.btn-action.secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Mengatur ulang form-group untuk konsistensi */
+.form-group {
+    margin-bottom: 15px;
+}
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar">
+            <div class="logo">Nesa Luwe Admin</div>
+            <ul>
+                <li><a href="admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="kelolawarung.php"><i class="fas fa-store"></i> Kelola Warung</a></li>
+                <li><a href="kelolamenu.php" class="active"><i class="fas fa-utensils"></i> Kelola Menu</a></li>
+                <li><a href="kelolauser.php"><i class="fas fa-users"></i> Kelola Pengguna</a></li>
+                <li><a href="stats.php"><i class="fas fa-chart-line"></i> Laporan & Statistik</a></li>
+                <li><a href="pengaturan.php"><i class="fas fa-cog"></i> Pengaturan</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>Dashboard Admin</h1>
+                <div class="user-info">
+                    <span>Selamat Datang, Admin!</span>
+                    <a href="#">Logout</a>
+                </div>
+            </div>
+
+           <div class="content-area">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div class="filter-group">
+            <label for="filter_warung" class="form-label" style="display: inline-block; margin-right: 10px;">Filter Warung:</label>
+            <select id="filter_warung" class="form-control" style="width: auto; display: inline-block;">
+                <option value="all">Semua Warung</option>
+                <option value="W001">Warung Makmur</option>
+                <option value="W002">Soto Ayam Bu Ani</option>
+                <option value="W003">Kopi & Roti Panggang</option>
+            </select>
+        </div>
+        
+        <button class="btn-action primary" onclick="document.getElementById('form-menu-card').style.display='block';">
+            <i class="fas fa-plus"></i> Tambah Menu Baru
+        </button>
+    </div>
+
+    <div class="card">
+        <h3>Daftar Menu Makanan & Minuman</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Menu</th>
+                    <th>Warung</th>
+                    <th>Harga</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>M101</td>
+                    <td>Nasi Goreng Spesial</td>
+                    <td>Warung Makmur</td>
+                    <td>Rp 18.000</td>
+                    <td><span class="status-active">Tersedia</span></td>
+                    <td>
+                        <button class="btn-action edit" onclick="editMenu('M101')">Edit</button>
+                        <button class="btn-action delete">Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>M102</td>
+                    <td>Soto Ayam Kuah Bening</td>
+                    <td>Soto Ayam Bu Ani</td>
+                    <td>Rp 15.000</td>
+                    <td><span class="status-active">Tersedia</span></td>
+                    <td>
+                        <button class="btn-action edit" onclick="editMenu('M102')">Edit</button>
+                        <button class="btn-action delete">Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>M103</td>
+                    <td>Es Teh Manis Jumbo</td>
+                    <td>Warung Makmur</td>
+                    <td>Rp 5.000</td>
+                    <td><span class="status-inactive">Habis</span></td>
+                    <td>
+                        <button class="btn-action edit" onclick="editMenu('M103')">Edit</button>
+                        <button class="btn-action delete">Hapus</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" id="form-menu-card" style="display:none;">
+        <h3 id="form-title-menu">Tambah Menu Baru</h3>
+        <form id="menu-form">
+            <div class="form-group">
+                <label for="menu_warung" class="form-label">Pilih Warung:</label>
+                <select id="menu_warung" class="form-control" required>
+                    <option value="">-- Pilih Warung --</option>
+                    <option value="W001">Warung Makmur</option>
+                    <option value="W002">Soto Ayam Bu Ani</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="nama_menu" class="form-label">Nama Menu:</label>
+                <input type="text" id="nama_menu" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="deskripsi" class="form-label">Deskripsi Menu:</label>
+                <textarea id="deskripsi" class="form-control" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="harga" class="form-label">Harga (Rp):</label>
+                <input type="number" id="harga" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="kategori" class="form-label">Kategori:</label>
+                <select id="kategori" class="form-control">
+                    <option value="makanan">Makanan Utama</option>
+                    <option value="minuman">Minuman</option>
+                    <option value="cemilan">Cemilan/Snack</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="gambar" class="form-label">Gambar Menu:</label>
+                <input type="file" id="gambar" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="status_menu" class="form-label">Status Ketersediaan:</label>
+                <select id="status_menu" class="form-control">
+                    <option value="tersedia">Tersedia (Aktif)</option>
+                    <option value="habis">Habis (Tidak Aktif)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-action primary">Simpan Menu</button>
+            <button type="button" class="btn-action secondary" onclick="document.getElementById('form-menu-card').style.display='none';">Batal</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Fungsi JavaScript sederhana untuk simulasi edit
+    function editMenu(id) {
+        // Logika nyata di sini akan mengisi form dengan data menu berdasarkan ID
+        document.getElementById('form-title-menu').innerText = 'Edit Menu ' + id;
+        // Contoh mengisi beberapa field
+        document.getElementById('nama_menu').value = 'Nama Menu dari Database';
+        document.getElementById('menu_warung').value = 'W001'; 
+        
+        document.getElementById('form-menu-card').style.display = 'block';
+        window.scrollTo(0, document.body.scrollHeight); // Gulir ke form
+    }
+</script>
+
+                </div>
+        </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html>
